@@ -39,6 +39,8 @@ public class PracticeFormPage extends BasePage {
     WebElement inputCity;
     @FindBy(xpath = "//button[text()='Submit']")
     WebElement btnSubmit;
+    @FindBy(id = "example-modal-sizes-title-lg")
+    WebElement modalMessage;
 
 
     public void typePracticeForm(Student student) {
@@ -53,28 +55,37 @@ public class PracticeFormPage extends BasePage {
         typeSubjects(student.getSubject());
         typeHobbies(student.getHobbies());
         fieldAddress.sendKeys(student.getAddress());
-//        inputState.sendKeys(student.getState());
-//        inputCity.sendKeys(student.getCity());
-//        btnSubmit.click();
+        typeStateCity(student.getState(), student.getCity());
+
+        btnSubmit.click();
     }
 
     private void typeDateOfBirth(String dateOfBirth) {
         fieldDateOfBirth.click();
         String operationSystem = System.getProperty("os.name");
         System.out.println(operationSystem);
-        if(operationSystem.startsWith("Windows 11"))
+        if (operationSystem.startsWith("Windows 11"))
             fieldDateOfBirth.sendKeys(Keys.chord(Keys.CONTROL, "a"));
-        else  if(operationSystem.startsWith("Mac"))
+        else if (operationSystem.startsWith("Mac"))
             fieldDateOfBirth.sendKeys(Keys.chord(Keys.COMMAND, "a"));
         fieldDateOfBirth.sendKeys(dateOfBirth);
         fieldDateOfBirth.sendKeys(Keys.ENTER);
 
     }
 
-    private void typeSubjects(String subjects){
+    private void typeStateCity(String state, String city) {
+        inputState.sendKeys(state);
+        inputState.sendKeys(Keys.ENTER);
+
+        inputCity.sendKeys(city);
+        inputCity.sendKeys(Keys.ENTER);
+
+    }
+
+    private void typeSubjects(String subjects) {
         fieldSubjects.click();
         String[] arr = subjects.split(",");
-        for (String s: arr){
+        for (String s : arr) {
             fieldSubjects.sendKeys(s);
             fieldSubjects.sendKeys(Keys.ENTER);
         }
@@ -86,9 +97,9 @@ public class PracticeFormPage extends BasePage {
         btnGender.click();
     }
 
-    private void typeHobbies(List<Hobbies> hobbies){
-        for (Hobbies h:hobbies){
-            switch (h){
+    private void typeHobbies(List<Hobbies> hobbies) {
+        for (Hobbies h : hobbies) {
+            switch (h) {
                 case MUSIC:
                     driver.findElement(By.xpath(h.getLocator())).click();
                     break;
@@ -101,4 +112,14 @@ public class PracticeFormPage extends BasePage {
             }
         }
     }
+
+    public boolean validateModalMessage() {
+        return validateTextInElement(modalMessage, "Thanks for submitting the form");
+    }
+
+    public boolean validateModalMessageNegative() {
+        return validateTextInElement(modalMessage, "Negative");
+    }
+
+
 }
